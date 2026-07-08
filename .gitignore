@@ -22,6 +22,7 @@ env/
 *.log
 *.tmp
 *.bak
+*.txt
 .DS_Store
 Thumbs.db
 
@@ -39,3 +40,5 @@ VarSeq
 
 # Self
 .gitignore
+
+notes.txt
