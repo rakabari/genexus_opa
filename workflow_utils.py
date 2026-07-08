@@ -135,4 +135,5 @@ def process_vcf(project_path, vcf_path, manifest_path):
 
     subprocess.run(command, shell=True, check=True)
     # Preserve the Golden Helix task logs with the project for restart checks.
-    subprocess.run(["cp", "-r", os.path.dirname(os.getcwd()), project_path], check=True)
+    subprocess.run(f"cp -r {os.path.dirname(os.getcwd())} {project_path}", check=True, shell=True)
+    # subprocess.run(["cp", "-r", os.path.dirname(os.getcwd()), project_path], check=True)
