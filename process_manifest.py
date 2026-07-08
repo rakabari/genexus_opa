@@ -1,10 +1,8 @@
 #!/usr/bin/env python3 
-
 import csv
 import sys
 import subprocess
 import json
-
 
 def levenshtein_distance(s1, s2):
     """
@@ -134,21 +132,18 @@ def update_catalog(sample_line, matched_headers):
     # Run single subprocess command with all pairs
     if upsert_pairs:
         sample_name = sample_line.get('Sample', 'Unknown Sample')
-        print(f"\nUpdating catalog for sample: {sample_name}")
-        print("Fields being updated:")
+        # print(f"    Updating catalog for sample: {sample_name}")
+        # print("Fields being updated:")
         for pair in upsert_pairs:
             field, value = pair.split('=', 1)
-            print(f"    {field}: {value}")
+            # print(f"    {field}: {value}")
         # Run the subprocess and capture output
-        result = subprocess.run(
-            ["gautil", "client", "catalog-upsert", "SampleCatalog"] + upsert_pairs,
-            capture_output=True,
-            text=True
-        )
+        result = subprocess.run(["gautil", "client", "catalog-upsert", "SampleCatalog"] + upsert_pairs,
+                capture_output=True, text=True)
         
         # Check for errors and print output
-        if result.stdout:
-            print(f"Output: {result.stdout}")
+        # if result.stdout:
+        #     print(f"Output: {result.stdout}")
         
         if result.stderr:
             print(f"Warning/Error: {result.stderr}", file=sys.stderr)
@@ -157,28 +152,21 @@ def update_catalog(sample_line, matched_headers):
             print(f"Command failed with return code: {result.returncode}", file=sys.stderr)
             print(f"Failed command: gautil client catalog-upsert SampleCatalog {' '.join(upsert_pairs)}", file=sys.stderr)
         else:
-            print("✓ Successfully updated catalog")
+            print(f"    ✓ Successfully updated catalog: {sample_name}")
 
     return None
 
-
-def main():
+def process_manifest(input_file):
     """
     Main function to parse command line arguments and process the manifest
     """
 
-    if len(sys.argv) < 2:
-        print("Usage: python process_manifest.py <input_tsv_file>")
-        sys.exit(1)
-    
-    input_file = sys.argv[1]
-    
-    print(f"Processing manifest file: {input_file}")
-    print("Getting headers from SampleCatalog...")
+    # print(f"Processing manifest file: {input_file}")
+    # print("Getting headers from SampleCatalog...")
     catalog_headers = get_catalog_headers()
-    print("Getting headers from manifest file...")
+    # print("Getting headers from manifest file...")
     manifest_headers = get_manifest_headers(input_file)
-    print("Matching manifest headers to catalog fields...")
+    # print("Matching manifest headers to catalog fields...")
     matched_headers = match_headers_to_catalog(manifest_headers, catalog_headers)
     
     # Check file extension to determine delimiter
@@ -187,12 +175,8 @@ def main():
     else:
         delimiter = ','
     
-    print("Updating catalog with sample data...")
+    # print("Updating catalog with sample data...")
     with open(input_file, "r") as f:
         reader = csv.DictReader(f, delimiter=delimiter)
         for line in reader:
             update_catalog(line, matched_headers)
-
-
-if __name__ == "__main__":
-    main()

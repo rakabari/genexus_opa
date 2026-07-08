@@ -1,0 +1,26 @@
+name: Create Project
+description: Update SampleCatalog using run manifest tsv, then create VarSeq projects for each VCF.gz file within a run directory
+auto_generate_session_for_account: "{workspaceBot}"
+
+agent_requirements:
+  cpu_cores: 4
+  memory_gb: 12
+
+parameters:
+  - name: base_path
+    label: Input directory
+    help: Directory containing Run_Data, Sample_Manifest, and VarSeq_Projects directories
+    type: directory
+    supports_location_mode: read_only
+
+steps:
+  - name: update_catalog_and_create_projects
+    description: Update SampleCatalog and create VarSeq projects
+    type: cmd
+    command: bash
+    docker:
+      image: ${VSPIPELINE_DOCKER_IMAGE}
+    args:
+      - |- # shell
+        set -euo pipefail
+        exec python3 "${TASK_DIR}/create_project.py" "${base_path}"

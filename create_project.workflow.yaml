@@ -1,0 +1,16 @@
+name: Update Catalog and Create Project
+description: Update SampleCatalog using run manifest tsv, then create VarSeq projects for each VCF.gz file within a run directory
+
+stages:
+  - name: Create Project
+    description: Update SampleCatalog and create the VarSeq project
+    task_path: create_project.task.yaml
+    depends_on: []
+    task_parameters:
+      - name: base_path
+        label: Input directory
+        help: Fixed Genexus OPA input directory
+        type: directory
+        value: sdrive/NGS_Solid_Tumors/Genexus_OPA_Clinical
+        editable: false
+        supports_location_mode: read_only
